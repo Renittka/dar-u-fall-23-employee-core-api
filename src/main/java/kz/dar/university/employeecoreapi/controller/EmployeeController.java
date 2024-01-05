@@ -1,5 +1,6 @@
 package kz.dar.university.employeecoreapi.controller;
 
+import jakarta.validation.Valid;
 import kz.dar.university.employeecoreapi.domain.Employee;
 import kz.dar.university.employeecoreapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +30,14 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public void createEmployee(@RequestBody Employee employee) {
+    public void createEmployee(@Valid @RequestBody Employee employee) {
         employeeService.createEmployee(employee);
     }
 
     @PutMapping("/{id}")
     public void updateEmployee(
             @PathVariable String id,
-            @RequestBody Employee employee
+            @Valid @RequestBody Employee employee
     ) {
         employee.setId(id);
         employeeService.updateEmployee(employee);
@@ -44,7 +45,7 @@ public class EmployeeController {
 
     @PutMapping
     public void updateEmployee(
-            @RequestBody Employee employee
+            @Valid @RequestBody Employee employee
     ) {
         employeeService.updateEmployee(employee);
     }

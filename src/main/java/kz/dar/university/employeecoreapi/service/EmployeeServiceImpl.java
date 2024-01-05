@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -51,6 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void createEmployee(Employee employee) {
+        employee.setId(UUID.randomUUID().toString());
         employees.put(employee.getId(), employee);
     }
 
