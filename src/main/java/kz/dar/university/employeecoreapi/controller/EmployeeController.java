@@ -5,6 +5,7 @@ import kz.dar.university.employeecoreapi.domain.Employee;
 import kz.dar.university.employeecoreapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,13 @@ public class EmployeeController {
 //    private EmployeeService employeeService;
 
     private final EmployeeService employeeService;
+
+    private final Environment env;
+
+    @GetMapping("/check")
+    public String check() {
+        return "employee-core-api is working at the port: " + env.getProperty("local.server.port");
+    }
 
     @GetMapping("/all")
     public List<Employee> getAllEmployees() {
