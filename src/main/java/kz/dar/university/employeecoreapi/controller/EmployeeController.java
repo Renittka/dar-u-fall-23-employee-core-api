@@ -2,6 +2,7 @@ package kz.dar.university.employeecoreapi.controller;
 
 import jakarta.validation.Valid;
 import kz.dar.university.employeecoreapi.domain.Employee;
+import kz.dar.university.employeecoreapi.domain.EmployeeRequest;
 import kz.dar.university.employeecoreapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,22 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
+    /*
+    @GetMapping("/id/{id}/{second}") ->  /employee/id/123/456
+    @GetMapping("/{id}") -> /employee/123
+     */
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable String id) {
+    public Employee getEmployeeById(
+            @PathVariable String id
+    ) {
         return employeeService.getEmployeeById(id);
+    }
+
+    @PutMapping("/filter")
+    public Employee filter(
+            @RequestBody EmployeeRequest employeeRequest
+    ) {
+        return employeeService.getEmployeeById(employeeRequest.getPosition());
     }
 
     @PostMapping
