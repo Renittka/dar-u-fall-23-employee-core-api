@@ -1,11 +1,11 @@
 package kz.dar.university.employeecoreapi.controller;
 
 import jakarta.validation.Valid;
-import kz.dar.university.employeecoreapi.domain.Employee;
 import kz.dar.university.employeecoreapi.domain.EmployeeRequest;
+import kz.dar.university.employeecoreapi.domain.EmployeeFilter;
+import kz.dar.university.employeecoreapi.domain.EmployeeResponse;
 import kz.dar.university.employeecoreapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +29,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeResponse> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
@@ -38,38 +38,38 @@ public class EmployeeController {
     @GetMapping("/{id}") -> /employee/123
      */
     @GetMapping("/{id}")
-    public Employee getEmployeeById(
+    public EmployeeResponse getEmployeeById(
             @PathVariable String id
     ) {
         return employeeService.getEmployeeById(id);
     }
 
     @PutMapping("/filter")
-    public Employee filter(
-            @RequestBody EmployeeRequest employeeRequest
+    public EmployeeResponse filter(
+            @RequestBody EmployeeFilter employeeFilter
     ) {
-        return employeeService.getEmployeeById(employeeRequest.getPosition());
+        return employeeService.getEmployeeById(employeeFilter.getPosition());
     }
 
     @PostMapping
-    public void createEmployee(@Valid @RequestBody Employee employee) {
-        employeeService.createEmployee(employee);
+    public EmployeeResponse createEmployee(@Valid @RequestBody EmployeeRequest employeeRequest) {
+        return employeeService.createEmployeeWithMapper(employeeRequest);
     }
 
     @PutMapping("/{id}")
     public void updateEmployee(
             @PathVariable String id,
-            @Valid @RequestBody Employee employee
+            @Valid @RequestBody EmployeeRequest employeeRequest
     ) {
-        employee.setId(id);
-        employeeService.updateEmployee(employee);
+        employeeRequest.setId(id);
+        employeeService.updateEmployee(employeeRequest);
     }
 
     @PutMapping
     public void updateEmployee(
-            @Valid @RequestBody Employee employee
+            @Valid @RequestBody EmployeeRequest employeeRequest
     ) {
-        employeeService.updateEmployee(employee);
+        employeeService.updateEmployee(employeeRequest);
     }
 
     @DeleteMapping("/{id}")

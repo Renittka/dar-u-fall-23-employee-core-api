@@ -1,18 +1,21 @@
 package kz.dar.university.employeecoreapi.service;
 
-import kz.dar.university.employeecoreapi.domain.Employee;
+import kz.dar.university.employeecoreapi.domain.EmployeeRequest;
+import kz.dar.university.employeecoreapi.domain.EmployeeResponse;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    List<Employee> getAllEmployees();
+    List<EmployeeResponse> getAllEmployees();
 
-    Employee getEmployeeById(String id);
+    EmployeeResponse getEmployeeById(String id);
 
-    void createEmployee(Employee employee);
+    EmployeeResponse createEmployee(EmployeeRequest employeeRequest);
 
-    void updateEmployee(Employee employee);
+    EmployeeResponse createEmployeeWithMapper(EmployeeRequest employeeRequest);
+
+    void updateEmployee(EmployeeRequest employeeRequest);
 
     void deleteEmployeeById(String id);
 
