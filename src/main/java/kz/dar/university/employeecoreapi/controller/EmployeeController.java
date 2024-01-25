@@ -33,6 +33,13 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
+    @GetMapping("/list")
+    public List<EmployeeResponse> getEmployeesByList(
+            @RequestParam List<String> employeeIds
+    ) {
+        return employeeService.getEmployeesByList(employeeIds);
+    }
+
     /*
     @GetMapping("/id/{id}/{second}") ->  /employee/id/123/456
     @GetMapping("/{id}") -> /employee/123

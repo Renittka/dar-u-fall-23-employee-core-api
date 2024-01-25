@@ -9,6 +9,8 @@ public interface EmployeeService {
 
     List<EmployeeResponse> getAllEmployees();
 
+    List<EmployeeResponse> getEmployeesByList(List<String> employeeIds);
+
     EmployeeResponse getEmployeeById(String id);
 
     EmployeeResponse createEmployee(EmployeeRequest employeeRequest);

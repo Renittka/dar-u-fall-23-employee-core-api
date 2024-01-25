@@ -57,6 +57,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<EmployeeResponse> getEmployeesByList(List<String> employeeIds) {
+        return employees.values()
+                .stream()
+                .filter(employee -> employeeIds.contains(employee))
+                .map(employeeMapper::map)
+                .toList();
+    }
+
+    @Override
     public EmployeeResponse getEmployeeById(String id) {
         Employee foundEmployee = employees.get(id);
 
