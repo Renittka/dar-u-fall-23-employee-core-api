@@ -2,163 +2,88 @@ package kz.dar.university.employeecoreapi.service;
 
 import kz.dar.university.employeecoreapi.domain.EmployeeRequest;
 import kz.dar.university.employeecoreapi.domain.EmployeeResponse;
-import kz.dar.university.employeecoreapi.domain.model.Employee;
-import kz.dar.university.employeecoreapi.util.EmployeeMapper;
+import kz.dar.university.employeecoreapi.domain.model.EmployeeEntity;
+import kz.dar.university.employeecoreapi.repository.EmployeeRepository;
+import kz.dar.university.employeecoreapi.util.mapper.EmployeeDbMapper;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeMapper employeeMapper;
-
-    private HashMap<String, Employee> employees = new HashMap<>();
-
-    private ModelMapper mapper = new ModelMapper();
-
-    {
-        Employee newEmployeeRequest = new Employee(
-                "1234",
-                "John Smith",
-                "Backend dev",
-                "Scala developer",
-                "john@gmail.com",
-                120000
-        );
-
-        employees.put(
-                "123",
-                Employee
-                        .builder()
-                        .id("123")
-                        .fullName("Maria Smith")
-                        .salary(120000)
-                        .department("Backend dev")
-                        .position("Java developer")
-                        .email("hello@gmail.com")
-                        .build()
-        );
-
-        employees.put(newEmployeeRequest.getId(), newEmployeeRequest);
-    }
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeDbMapper mapper;
 
     @Override
     public List<EmployeeResponse> getAllEmployees() {
-        return employees.values()
+        return employeeRepository.getEmployeeEntitiesBy()
                 .stream()
-                .map(employeeMapper::map)
+                .map(mapper::map)
                 .toList();
     }
 
     @Override
     public List<EmployeeResponse> getEmployeesByList(List<String> employeeIds) {
-        return employees.values()
+        return employeeRepository.getEmployeeEntitiesByEmployeeIdIn(employeeIds)
                 .stream()
-                .filter(employee -> employeeIds.contains(employee))
-                .map(employeeMapper::map)
+                .map(entity -> {
+                    EmployeeResponse response = mapper.map(entity);
+                    log.info("Employee entity: " + response);
+                    return response;
+                })
                 .toList();
     }
 
     @Override
     public EmployeeResponse getEmployeeById(String id) {
-        Employee foundEmployee = employees.get(id);
+        Optional<EmployeeEntity> maybeEntity = employeeRepository.getEmployeeEntityByEmployeeId(id);
+        log.info("Maybe entity: " + maybeEntity);
 
-        //return mapper.map(foundEmployee, EmployeeResponse.class);
-        return employeeMapper.map(foundEmployee);
+        return maybeEntity.map(mapper::map).orElse(null);
+        /*
+        Alternative way:
+        if(maybeEntity.isPresent()) {
+            return mapper.map(maybeEntity.get());
+        }
+        return null;
+         */
     }
 
     @Override
     public EmployeeResponse createEmployee(EmployeeRequest employeeRequest) {
-        /* Input: ..Request
-           Process: ..Entity, ..DTO (Data Transport Object)
-           Output: ..Response
-         */
+        // request -> EmployeeEntity
+        EmployeeEntity savedEntity = employeeRepository.save(
+                mapper.map(employeeRequest)
+        );
 
-        /*
-        First Option
-        Employee newEmployee =  new Employee();
-        newEmployee.setId(UUID.randomUUID().toString());
-        newEmployee.setDepartment(employeeRequest.getDepartment());
-        newEmployee.setSalary(employeeRequest.getSalary());
-        newEmployee.setEmail(employeeRequest.getEmail());
-        newEmployee.setFullName(employeeRequest.getName() + " " + employeeRequest.getSurname());
-        newEmployee.setPosition(employeeRequest.getPosition());
-         */
-
-        Employee employeeToSave = map(employeeRequest);
-        employees.put(employeeToSave.getId(), employeeToSave);
-
-        Employee createdEmployee = employees.get(employeeRequest.getId());
-
-        return map(createdEmployee);
+        // entity -> EmployeeResponse
+        return mapper.map(savedEntity);
     }
 
     @Override
-    public EmployeeResponse createEmployeeWithMapper(EmployeeRequest employeeRequest) {
-        // Convert from EmployeeRequest to Employee
-        /*
-        Employee employeeToSave = mapper.map(employeeRequest, Employee.class);
-        employeeToSave.setFullName(employeeRequest.getName() + " " + employeeRequest.getSurname());
-        employeeToSave.setId(UUID.randomUUID().toString());
-         */
-        Employee employeeToSave = employeeMapper.map(employeeRequest);
-
-        employees.put(employeeToSave.getId(), employeeToSave);
-
-        Employee createdEmployee = employees.get(employeeToSave.getId());
-
-        // Convert from Employee to EmployeeResponse
-        //return mapper.map(createdEmployee, EmployeeResponse.class);
-        return employeeMapper.map(createdEmployee);
-    }
-
-    @Override
-    public void updateEmployee(EmployeeRequest employeeRequest) {
-        String employeeId = employeeRequest.getId();
-
-        if (employees.containsKey(employeeId)) {
-//            employees.put(
-//                    employeeId,
-//                    mapper.map(employeeRequest, Employee.class)
-//            );
-            employees.put(
-                    employeeId,
-                    employeeMapper.map(employeeRequest)
+    public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest) {
+        Optional<EmployeeEntity> maybeEntity = employeeRepository.getEmployeeEntityByEmployeeId(employeeRequest.getEmployeeId());
+        if (maybeEntity.isPresent()) {
+            EmployeeEntity entityToUpdate = mapper.map(employeeRequest);
+            entityToUpdate.setId(maybeEntity.get().getId());
+            return mapper.map(
+                    employeeRepository.save(
+                            entityToUpdate
+                    )
             );
         }
+        return null;
     }
 
     @Override
     public void deleteEmployeeById(String id) {
-        employees.remove(id);
-    }
-
-    private Employee map(EmployeeRequest employeeRequest) {
-        return Employee.builder()
-                .fullName(employeeRequest.getName() + " " + employeeRequest.getSurname())
-                .department(employeeRequest.getDepartment())
-                .email(employeeRequest.getEmail())
-                .salary(employeeRequest.getSalary())
-                .id(employeeRequest.getId() == null ? UUID.randomUUID().toString() : employeeRequest.getId())
-                .position(employeeRequest.getPosition())
-                .build();
-    }
-
-    private EmployeeResponse map(Employee employee) {
-        return EmployeeResponse.builder()
-                .fullName(employee.getFullName())
-                .department(employee.getDepartment())
-                .email(employee.getEmail())
-                .salary(employee.getSalary())
-                .id(employee.getId())
-                .position(employee.getPosition())
-                .build();
+        employeeRepository.deleteEmployeeEntityByEmployeeId(id);
     }
 
 }

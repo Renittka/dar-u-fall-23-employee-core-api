@@ -15,9 +15,9 @@ public interface EmployeeService {
 
     EmployeeResponse createEmployee(EmployeeRequest employeeRequest);
 
-    EmployeeResponse createEmployeeWithMapper(EmployeeRequest employeeRequest);
+    //EmployeeResponse createEmployeeWithMapper(EmployeeRequest employeeRequest);
 
-    void updateEmployee(EmployeeRequest employeeRequest);
+    EmployeeResponse updateEmployee(EmployeeRequest employeeRequest);
 
     void deleteEmployeeById(String id);
 

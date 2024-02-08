@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import kz.dar.university.employeecoreapi.domain.EmployeeRequest;
 import kz.dar.university.employeecoreapi.domain.EmployeeFilter;
 import kz.dar.university.employeecoreapi.domain.EmployeeResponse;
+import kz.dar.university.employeecoreapi.domain.model.Employee;
 import kz.dar.university.employeecoreapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,29 +61,36 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeResponse createEmployee(@Valid @RequestBody EmployeeRequest employeeRequest) {
-        return employeeService.createEmployeeWithMapper(employeeRequest);
+    public EmployeeResponse createEmployee(
+            @Valid @RequestBody EmployeeRequest employeeRequest
+    ) {
+        return employeeService.createEmployee(employeeRequest);
     }
 
     @PutMapping("/{id}")
-    public void updateEmployee(
+    public EmployeeResponse updateEmployee(
             @PathVariable String id,
             @Valid @RequestBody EmployeeRequest employeeRequest
     ) {
-        employeeRequest.setId(id);
-        employeeService.updateEmployee(employeeRequest);
+        employeeRequest.setEmployeeId(id);
+        return employeeService.updateEmployee(employeeRequest);
     }
 
     @PutMapping
-    public void updateEmployee(
+    public EmployeeResponse updateEmployee(
             @Valid @RequestBody EmployeeRequest employeeRequest
     ) {
-        employeeService.updateEmployee(employeeRequest);
+        return employeeService.updateEmployee(employeeRequest);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEmployeeById(@PathVariable String id) {
-        employeeService.deleteEmployeeById(id);
+    public ResponseEntity deleteEmployeeById(@PathVariable String id) {
+        try {
+            employeeService.deleteEmployeeById(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

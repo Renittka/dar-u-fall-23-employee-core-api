@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeRequest {
-    private String id;
+    private String employeeId;
 
     @NotNull(message = "Name can not be empty")
     @Size(min = 2, max = 16, message = "Name must be in size range 2-16")
