@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import kz.dar.university.employeecoreapi.domain.EmployeeRequest;
 import kz.dar.university.employeecoreapi.domain.EmployeeFilter;
 import kz.dar.university.employeecoreapi.domain.EmployeeResponse;
-import kz.dar.university.employeecoreapi.domain.model.Employee;
 import kz.dar.university.employeecoreapi.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;

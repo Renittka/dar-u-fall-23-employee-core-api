@@ -7,7 +7,6 @@ import kz.dar.university.employeecoreapi.service.EmployeeService;
 import kz.dar.university.employeecoreapi.util.EmployeeMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
