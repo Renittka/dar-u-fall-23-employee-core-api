@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/employee")
@@ -39,6 +40,13 @@ public class EmployeeController {
             @RequestParam List<String> employeeIds
     ) {
         return employeeService.getEmployeesByList(employeeIds);
+    }
+
+    @GetMapping("/map")
+    public Map<String, EmployeeResponse> getEmployeesMap(
+            @RequestParam List<String> employeeIds
+    ) {
+        return employeeService.getEmloyeesMap(employeeIds);
     }
 
     /*

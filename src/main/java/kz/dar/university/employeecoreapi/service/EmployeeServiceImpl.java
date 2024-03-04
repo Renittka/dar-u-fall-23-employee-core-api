@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -38,6 +40,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                     return response;
                 })
                 .toList();
+    }
+
+    @Override
+    public Map<String, EmployeeResponse> getEmloyeesMap(List<String> employeeIds) {
+        HashMap<String, EmployeeResponse> employeesMap = new HashMap<>();
+        List<EmployeeResponse> employeesList = getEmployeesByList(employeeIds);
+        employeesList.forEach(employee -> employeesMap.put(employee.getEmployeeId(), employee));
+
+        return employeesMap;
     }
 
     @Override
