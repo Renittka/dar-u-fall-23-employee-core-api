@@ -25,24 +25,24 @@ public class EmployeeController {
 
     private final Environment env;
 
-    @GetMapping("/check")
+    @GetMapping("check")
     public String check() {
         return "employee-core-api is working at the port: " + env.getProperty("local.server.port");
     }
 
-    @GetMapping("/all")
+    @GetMapping("all")
     public List<EmployeeResponse> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
-    @GetMapping("/list")
+    @GetMapping("list")
     public List<EmployeeResponse> getEmployeesByList(
             @RequestParam List<String> employeeIds
     ) {
         return employeeService.getEmployeesByList(employeeIds);
     }
 
-    @GetMapping("/map")
+    @GetMapping("map")
     public Map<String, EmployeeResponse> getEmployeesMap(
             @RequestParam List<String> employeeIds
     ) {
@@ -53,14 +53,14 @@ public class EmployeeController {
     @GetMapping("/id/{id}/{second}") ->  /employee/id/123/456
     @GetMapping("/{id}") -> /employee/123
      */
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public EmployeeResponse getEmployeeById(
             @PathVariable String id
     ) {
         return employeeService.getEmployeeById(id);
     }
 
-    @PutMapping("/filter")
+    @PutMapping("filter")
     public EmployeeResponse filter(
             @RequestBody EmployeeFilter employeeFilter
     ) {
@@ -74,7 +74,7 @@ public class EmployeeController {
         return employeeService.createEmployee(employeeRequest);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     public EmployeeResponse updateEmployee(
             @PathVariable String id,
             @Valid @RequestBody EmployeeRequest employeeRequest
@@ -90,7 +90,7 @@ public class EmployeeController {
         return employeeService.updateEmployee(employeeRequest);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity deleteEmployeeById(@PathVariable String id) {
         try {
             employeeService.deleteEmployeeById(id);

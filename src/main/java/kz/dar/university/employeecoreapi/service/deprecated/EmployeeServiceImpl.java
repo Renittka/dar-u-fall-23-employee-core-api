@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Deprecated
@@ -58,7 +59,7 @@ public class EmployeeServiceImpl {
     public List<EmployeeResponse> getEmployeesByList(List<String> employeeIds) {
         return employees.values()
                 .stream()
-                .filter(employee -> employeeIds.contains(employee))
+                .filter(employee -> employeeIds.contains(employee.getId()))
                 .map(employeeMapper::map)
                 .toList();
     }
